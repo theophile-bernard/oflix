@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="fr">
+
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+
+		{% block stylesheets %}
+			<!-- Bootstrap CSS -->
+			<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+			<!-- Bootstrap icons -->
+			<link
+			rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+			<!-- Our custom CSS -->
+			<link
+			rel="stylesheet" href="{{ asset('css/oflix.css') }}">
+		    <!-- favicon -->
+            <link rel="shortcut icon" href="{{asset('favicon.png')}}" type="image/x-icon">
+
+		{% endblock %}
+
+		{% block javascripts %}
+			<!-- Optional JavaScript; choose one of 
+			                the two! -->
+
+			<!-- Option 1: Bootstrap Bundle with Popper --><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"> </script>
+
+			<!-- Option 2: Separate Popper and Bootstrap JS -->
+			<!--
+			            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN" crossorigin="anonymous"></script>
+			            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js" integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
+			            -->
+		{% endblock %}
+
+		<title>O'flix</title>
+	</head>
+
+	<body>
+
+		<!-- Nav -->
+		{% if app.session.get("theme") == "netflix" %}
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		{% else %}
+ 		<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #fecc00;">
+		{% endif %}
+			<div class="container-fluid">
+				<a href="{{ path("front_main_home")}}" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none header-logo">
+					<img src="{{asset('favicon.png')}}" height="24" alt="Logo O'flix">
+					<span class="header-logo__title">O'flix</span>
+				</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+						<li class="nav-item">
+							<a class="nav-link active" href="{{ path("front_main_home")}}">Accueil</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{{ path("front_main_index")}}">
+								<i class="bi bi-film"></i>
+								Films, séries TV</a>
+						</li>
+						{% if is_granted('IS_AUTHENTICATED') %}
+						<li class="nav-item">
+							<a class="nav-link" href="{{ path("front_favorites_index")}}">
+								<i class="bi bi-bookmark"></i>
+								Ma liste</a>
+						</li>
+						{% endif %}
+					</ul>
+					<div class="my-auto mx-2">
+					{% if app.user.roles is defined %}
+						{% if app.user.roles == ["ROLE_USER"] %}
+							<p class="nav-item m-auto">User</p>
+						{% elseif app.user.roles == ["ROLE_MANAGER"] %}
+							<p class="nav-item m-auto">Manager</p>
+						{% elseif app.user.roles == ["ROLE_ADMIN"]%}
+							<p class="nav-item m-auto">Admin</p>
+						{% endif %}
+					{% else %}
+						<p class="nav-item m-auto">Visiteur</p>
+					{% endif %}
+					</div>
+					{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+						<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+									<span>{{ app.user.email }}</span>
+									<i class="bi bi-person-square"></i>
+								</a>
+								<ul class="dropdown-menu">
+									<li>
+										<a class="dropdown-item" href="#">Profil</a>
+									</li>
+									{% if is_granted('ROLE_MANAGER') %}
+										<li>
+											<a class="dropdown-item" href="{{ path("app_back_movie_index") }}">Backoffice</a>
+										</li>
+									{% endif %}
+									<li>
+										<hr class="dropdown-divider">
+									</li>
+									<li>
+										<a class="dropdown-item" href="{{ path("app_logout")}}">Déconnexion</a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					{% endif %}
+					{% if not is_granted('IS_AUTHENTICATED') %}
+						<a href="{{ path("app_login")}}" class="btn btn-danger me-2">Connexion</a>
+					{% endif %}
+					<form class="d-flex" action="{{ path("front_main_search") }}">
+						<input class="form-control form-control-sm me-2" name="search" type="search" placeholder="Rechercher...">
+						<button class="btn btn-outline-danger" type="submit">
+							<i class="bi bi-search"></i>
+						</button>
+					</form>
+				</div>
+			</div>
+		</nav>
+
+		{# read and display all flash messages #}
+		{% for label, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="flash-{{ label }}">
+					<div class="alert alert-{{ label }} alert-dismissible fade show flash-{{ label }}" role="alert">
+							{% if message.title is defined %}
+								<strong>{{message.title}}</strong>
+							{% endif %}	
+								{{ message.message }}
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+				</div>
+			{% endfor %}
+		{% endfor %}
+
+	{# Sous navigation pour le back #}
+		{% block sub_nav %}{% endblock %}
+		{% block body %}{% endblock %}
+		<!-- footer -->
+		<footer class="container-fluid py-4 border-top text-center">
+			<span class="text-muted">O'flix made with &hearts; at O'clock !
+				<br><small>Thème :
+					{% if app.session.get("theme") == "netflix" %}
+						<a href="{{ path('front_main_switcher') }}" class="link-secondary text-decoration-none"><i class="bi bi-toggle-on mx-1"></i>Netflix</a>
+					{% else %}
+						<a href="{{ path('front_main_switcher') }}" class="link-secondary text-decoration-none"><i class="bi bi-toggle-off mx-1"></i>Allociné</a>
+					{% endif %}
+				</small>
+			</a>
+		</span>
+	</body>
+</html>

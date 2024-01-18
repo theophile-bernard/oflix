@@ -1,0 +1,18 @@
+{# affiche le nombre d'étoile en fonction du rating
+gère les demi étoiles #}
+
+<div class="d-flex mb-4" style="color: orange;">
+    {% set k = stars %}
+    {% if k is not null %}
+        {% for i in range(1, stars|round(0, 'floor')) %}
+            <i class="bi bi-star-fill"></i>
+            {% set k = k-1 %}
+        {% endfor %}
+        {% if k>0 %}
+            <i class="bi bi-star-half"></i>
+        {% endif %}
+        <span class="ps-1">{{ stars }}</span>
+    {% else %}
+        <span class="ps-1">Ce film n'a pas reçu assez de critiques</span>
+    {% endif %}
+</div>

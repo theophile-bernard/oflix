@@ -1,0 +1,38 @@
+{% extends 'back/layout_back.html.twig' %}
+
+{% block title %}Liste des Castings{% endblock %}
+
+{% block body %}
+    <h1>Liste des Castings</h1>
+
+    <a href="{{ path('app_back_casting_new') }}" class="btn btn-success">Nouveau Casting</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Film</th>
+                <th>Ordre d'Apparition</th>
+                <th>Role</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for casting in castings %}
+            <tr>
+                <td>{{ casting.movie.title }}</td>
+                <td>{{ casting.castingOrder }}</td>
+                <td>{{ casting.role }}</td>
+                <td>
+                    <a href="{{ path('app_back_casting_show', {'id': casting.id}) }}" class="btn btn-sm btn-success">show</a>
+                    <a href="{{ path('app_back_casting_edit', {'id': casting.id}) }}" class="btn btn-sm btn-warning">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_back_casting_new') }}">Create new</a>
+{% endblock %}

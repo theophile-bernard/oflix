@@ -1,0 +1,21 @@
+{# Fichier : _bookmark.html.twig | Date: 2024-01-01 | Auteur: Patrick SUFFREN #}
+{# fragment permettant de gérer le bookmark des favoris  #}
+{# REFER : https://symfony.com/doc/current/templates.html#including-templates #}
+
+<form action=" 
+    {% if app.session.get('favorites')[key] is defined %} 
+        {{ path('front_favorites_remove' , {slug: key}) }} 
+    {% else %} 
+        {{ path('front_favorites_add' , {slug: key}) }} 
+    {% endif %}" 
+    method="POST"> 
+    <button class="btn movie__favorite fs-1 my-2 mx-3 link-danger">
+        <i class=
+            {% if app.session.get('favorites')[key] is defined %} 
+                "bi bi-bookmark-x-fill" 
+            {% else %} 
+                "bi bi-bookmark-plus" 
+            {% endif %}>
+        </i>
+    </button>
+</form>

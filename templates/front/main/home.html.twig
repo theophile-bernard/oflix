@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des films
+{% endblock %}
+
+{% block body %}
+	{# REFER : https://symfony.com/doc/6.4/templates.html#the-app-global-variable #}
+	{# on conditionne l'affichage du logo à la route d'arrivée #}
+
+    {% if (app.current_route == 'front_main_home') %}
+        <div class="my-5 py-5 text-center"> 
+            <img src="favicon.png" height="100" alt="Logo O'flix" class="mb-3">
+            <h1 class="display-6 fw-bold">Films, séries TV et popcorn en illimité.</h1>
+            <div class="col-lg-6 mx-auto">
+                <p class="lead mb-4 text-muted">Où que vous soyez. Gratuit pour toujours.</p>
+            </div>
+        </div>
+	{% endif %}
+
+
+	<div class="container-xl bg-light p-5 border-top">
+
+		<div class="row mb-2">
+
+			<div class="col-12 col-lg-3">
+				<h2 class="text-center text-muted fw-bold mb-4">Les genres</h2>
+				<ul class="d-flex flex-column flex-wrap list-unstyled justify-content-center">
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Action</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Animation</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Aventure</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Comédie</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Dessin animé</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Documentaire</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Drame</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Espionnage</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Famille</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Fantastique</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Historique</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Policier</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Romance</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Science-fiction</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Thriller</li>
+					<li class="btn btn-sm btn-outline-danger mx-1 mb-2">Western</li>
+				</ul>
+			</div>
+
+			<div class="col-12 col-lg-9">
+
+                {% if (app.current_route == 'front_main_home') %}
+                    <h2 class="text-muted fw-bold mb-4">Les nouveautés</h2>
+                {% elseif (app.current_route == 'front_main_search') %}
+					<h2 class="text-muted fw-bold mb-4">Résultat de la recherche</h2>
+				{% else %}
+                    <h2 class="text-muted fw-bold mb-4">Les films et séries</h2>
+                {% endif %}
+
+				{% dump(movies) %}
+				{# insère le dump de la variable dans la profile bar #}
+				{# {{ dump(movies) }} on insére le dump à l'intérieur de la page #}
+				{# REFER : https://twig.symfony.com/doc/3.x/ #}
+				{{ include('front/main/_movieList.html.twig') }}
+
+			</div>
+
+			<nav class="col-lg-9 offset-lg-3">
+				<ul class="pagination">
+					<li class="page-item disabled">
+						<a class="page-link">&laquo;</a>
+					</li>
+					<li class="page-item active">
+						<a class="page-link" href="#">1</a>
+					</li>
+					<li class="page-item" aria-current="page">
+						<a class="page-link" href="#">2</a>
+					</li>
+					<li class="page-item">
+						<a class="page-link" href="#">3</a>
+					</li>
+					<li class="page-item">
+						<a class="page-link" href="#">&raquo;</a>
+					</li>
+				</ul>
+			</nav>
+
+		</div>
+
+	</div>
+
+{% endblock %}

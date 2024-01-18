@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{movie.title}}
+	sur O'Flix
+{% endblock %}
+
+{% block body %}
+
+	<!-- main -->
+
+	<div class="container bg-lighttt pt-5">
+
+		<div class="row mb-2">
+
+			<div class="col">
+
+				<div class="row g-0 borderrr rrrounded overflow-hidden flex-md-row align-items-start mb-4 shadow-smmm position-relative">
+					<div class="col-4 movie__poster img-thumbnail" style="background-image: url({{movie.poster}});">
+						<img
+						src="{{asset("images/poster-placeholder.png")}}" class="img-fluid">
+					<!-- img src="https://m.media-amazon.com/images/M/MV5BNThmZGY4NzgtMTM4OC00NzNkLWEwNmEtMjdhMGY5YTc1NDE4XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg" class="img-fluid" -->
+					</div>
+
+					<div class="col-8 p-4 d-flex flex-column position-static bg-light">
+						{{ include('front/favorites/_bookmark.html.twig', {"key": movie.slug}) }}
+						<strong class="d-inline-block mb-2 text-primary">{{ movie.type }}</strong>
+						<h3 class="mb-1">{{ movie.title }}</h3>
+						<div class="mb-1 text-muted">{{ movie.duration }}
+							min</div>
+						<p>
+						{% for genre in movie.genres %}
+							<span class="badge bg-warning text-dark">{{ genre.name }}</span>
+						{% endfor %}
+
+						</p>
+						<p>{{ movie.synopsis }}
+						</p>
+						{{ include('front/main/_starsRating.html.twig', {'stars': movie.rating}) }}
+
+						{% if movie.type == 'Série' %}
+							<h2>{{ movie.seasons|length }} Saison{{ movie.seasons|length > 1 ? "s" : "" }}</h2>
+							<ul class="list-unstyled">
+								{% for season in movie.seasons %}
+								<li>
+									<span class="badge bg-danger fs-6 mb-2">Saison {{ season.number }}</span>
+									<small class="ms-1">({{ season.episodesNumber }} épisodes)</small>
+								</li>
+								{% endfor %}
+							</ul>
+						{% endif %}
+
+						<dl class="row">
+							<dt class="col-sm-12">Avec</dt>
+							<dd class="col-sm-12">
+
+							{% for casting in movie.casting %}
+								{{ casting.person.firstname ~ " " ~ casting.person.lastname }} ({{ casting.role }})<br>
+							{% endfor %}
+							</dd>
+							<dt class="col-sm-12">Pays</dt> 
+							<dd class="col-sm-12">USA</dd>
+							<dt class="col-sm-12">Année</dt>
+							<dd class="col-sm-12">{{ movie.releaseDate|date("Y") }}</dd>
+						</dl>
+
+						<a href="{{ path("front_main_show_add_review", {"slug": movie.slug}) }}" ><button class="btn btn-success mb-1 mt-3">Ajouter une critique</button></a>
+
+						{# Affichage des critiques #}
+						{% for review in movie.reviews %}
+							<div class="card border-warning mb3">
+								{{ include('front/main/_starsRating.html.twig', {'stars': review.rating}) }}
+								<div class="card-body">
+									<p class="card-text mb-4">
+										{{ review.content }}
+									</p>
+									<span>
+										<i>Réactions :</i>
+									</span>
+									{% for reaction in review.reactions %}
+										<span class="pd-6">
+											<i>{{ reaction }}</i>
+										</span>
+									{% endfor %}
+
+									<blockquote class="blockquote mt-5">
+										<footer class="blockquote-footer">
+											par
+											{{ review.username }}
+											le
+											<cite>
+												{{ review.watchedAt|date('d-m-Y') }}</cite>
+										</footer>
+									</blockquote>
+								</div>
+							</div>
+						{% else %}
+							<p>Pas de critiques sur ce film pour l'instant, ajoutez en une !</p>
+						{% endfor %}
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'back/layout_back.html.twig' %}
+
+{% block title %}Liste des films{% endblock %}
+
+{% block body %}
+    <h1>Liste des films et séries</h1>
+
+    <a href="{{ path('app_back_movie_new') }}" class="btn btn-success">Nouveau film</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                <th>Date de sortie</th>
+                <th>Durée</th>
+                <th class="text-center">Affiche</th>
+                <th>Note</th>
+                <th>Type</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for movie in movies %}
+            <tr>
+                <td>{{ movie.id }}</td>
+                <td class="text-truncate">{{ movie.title }}</td>
+                <td>{{ movie.releaseDate ? movie.releaseDate|date('Y-m-d') : '' }}</td>
+                <td class="text-end">{{ movie.duration }} min</td>
+                <td class="text-center"><img src="{{ movie.poster }}" alt="{{ movie.title }}" class="poster-thumbnail"></td>
+                <td>{{ movie.rating }}</td>
+                <td>{{ movie.type }}</td>
+                <td>
+                    <a href="{{ path('app_back_movie_show', {'id': movie.id}) }}" class="btn btn-sm btn-success">show</a>
+                    <a href="{{ path('app_back_movie_edit', {'id': movie.id}) }}" class="btn btn-sm btn-warning">edit</a>
+                    {% if movie.type == 'Série' %}
+                    <a href="{{ path('app_back_season_index', {'id': movie.id}) }}" class="btn btn-sm btn-info">saisons</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">Pas de films trouvés, rajoutez-en.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
