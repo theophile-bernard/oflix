@@ -30,3 +30,11 @@ services:
     App\Service\MySlugger:
         arguments:
             $toLower: '%env(bool:TO_LOWER)%'
+
+    App\Service\OmdbApi:
+        arguments:
+            $apikey: '%env(string:APIKEY)%'
+
+    App\EventSubscriber\MaintenanceSubscriber:
+        arguments:
+            $maintenanceActive: '%env(bool:MAINTENANCE_ACTIVE)%'

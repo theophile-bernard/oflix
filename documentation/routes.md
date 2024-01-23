@@ -10,5 +10,3 @@
 | `/favorites/add/{id}`    | `front_favorites_add`    | `POST`       | `FavoritesController` | `add`      | -                    | Ajout d'un favoris                                |
 | `/favorites/remove/{id}` | `front_favorites_remove` | `GET`        | `FavoritesController` | `remove`   | -                    | Suppression d'un favoris                          |
 | `/favorites/empty`       | `front_favorites_empty`  | `GET`        | `FavoritesController` | `empty`    | -                    | Vidage des favoris                                |
-
-TODO: To Modify

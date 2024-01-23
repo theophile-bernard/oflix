@@ -63,6 +63,15 @@ class MovieRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findOneByRandom()
+    {
+        return $this->createQueryBuilder('m')
+            ->orderBy('RAND()')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 //    /**
 //     * @return Movie[] Returns an array of Movie objects
 //     */

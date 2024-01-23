@@ -21,7 +21,7 @@ class FavoritesController extends AbstractController
         return $this->render('front/favorites/favorites.html.twig');
     }
 
-    #[Route('/favorites/add/{slug}', name: 'front_favorites_add', methods: ["POST"])]
+    #[Route('/favorites/add/{slug<[-\w]+>}', name: 'front_favorites_add', methods: ["POST"])]
     public function add(Movie $movie, /* SessionInterface $session, */ FavoriteManager $favoriteManager): Response
     {
 
@@ -59,7 +59,7 @@ class FavoritesController extends AbstractController
         return $this->redirectToRoute('front_favorites_index');
     }
 
-    #[Route('/favorites/remove/{slug}', name: 'front_favorites_remove')]
+    #[Route('/favorites/remove/{slug<[-\w]+>}', name: 'front_favorites_remove')]
     public function remove(Movie $movie, /* SessionInterface $session,  */ FavoriteManager $favoriteManager): Response
     {
         

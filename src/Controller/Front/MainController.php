@@ -42,7 +42,7 @@ class MainController extends AbstractController
         ]);
     }
 
-    #[Route('/show/{slug}', name: 'front_main_show')]
+    #[Route('/show/{slug<[-\w]+>}', name: 'front_main_show')]
     public function show(Movie $mv = null, CastingRepository $castingRepository) : Response
     {
         // dd($movie);
@@ -67,7 +67,7 @@ class MainController extends AbstractController
         ]);
     }
 
-    #[Route('/show/{slug}/add-review', name: 'front_main_show_add_review', methods: ["GET", "POST"])]
+    #[Route('/show/{slug<[-\w]+>}/add-review', name: 'front_main_show_add_review', methods: ["GET", "POST"])]
     #[IsGranted('ROLE_USER')]
     public function addReview(Movie $mv = null, Request $request, EntityManagerInterface $em, ReviewRepository $reviewRepository) : Response
     {
@@ -106,13 +106,14 @@ class MainController extends AbstractController
                 "title" => ""]
             );
 
+            // Substituer dans le EventListener ReviewInsertUpdate
             // on apelle une requête personnalisée qui calcule la moyenne
-            $averageRating = $reviewRepository->averageRating($mv);
+            // $averageRating = $reviewRepository->averageRating($mv);
             // on modifie le Movie
-            $mv->setRating($averageRating);
-            $em->flush();
+            // $mv->setRating($averageRating);
+            // $em->flush();
             
-            return $this->redirectToRoute('front_main_show', ["id" => $mv->getId()]);
+            return $this->redirectToRoute('front_main_show', ["slug" => $mv->getSlug()]);
         }
 
         return $this->render('front/main/add-review.html.twig', [
