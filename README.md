@@ -1,5 +1,6 @@
 # Projet O'flix, Symfony Getting Started
 
+<<<<<<< HEAD
 Afin de prendre en main le framework Symfony, nous allons mettre en place un site qui répertorie des films et des séries ! Appelons-le O'flix.
 
 Voici quelques captures et contenus fournis, pour entrevoir les fonctionnalités attendues. Les étapes de l'exercice sont détaillées ensuite.
@@ -138,3 +139,8 @@ On le notera par un **changement de couleur de la nav** : Netflix en noir / Allo
 > Ce bonus sert principalement à s'exercer avec les concepts de Symfony, la gestion d'un thème se faisant plutôt côté client (cookie, LocalStorage) ou le cas échéant dans le profil de l'utilisateur côté back, à voir quand on découvrira l'usage des bases de données.
 
 [Plus d'info par ici](README-Theme-switcher.md)
+=======
+Mise en place d'un site qui répertorie des films et des séries - WIP
+
+PHP 8.2, Symfony 6.4 
+>>>>>>> 7d7d1de4a88212b1295d7e09cf6ff83d617b4885
