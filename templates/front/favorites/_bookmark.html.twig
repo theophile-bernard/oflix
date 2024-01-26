@@ -9,7 +9,7 @@
         {{ path('front_favorites_add' , {slug: key}) }} 
     {% endif %}" 
     method="POST"> 
-    <button class="btn movie__favorite fs-1 my-2 mx-3 link-danger">
+    <button class="btn movie__favorite fs-1 my-2 mx-3 link-danger" id="favorite">
         <i class=
             {% if app.session.get('favorites')[key] is defined %} 
                 "bi bi-bookmark-x-fill" 

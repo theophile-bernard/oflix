@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\CastingRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CastingRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -19,6 +20,7 @@ class Casting
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
+    #[Groups(['get_item'])]
     private ?string $role = null;
 
     #[ORM\Column]
@@ -36,6 +38,7 @@ class Casting
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank()]
     #[Assert\Type(Person::class)]
+    #[Groups(['get_item'])]
     private ?Person $person = null;
  
     public function getId(): ?int

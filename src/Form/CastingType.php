@@ -27,7 +27,9 @@ class CastingType extends AbstractType
             ])
             ->add('movie', EntityType::class, [
                 'class' => Movie::class,
-                'choice_label' => 'title',
+                'choice_label' => function (Movie $movie): string {
+                    return $movie->getTitle();
+                },
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
                     return $er->createQueryBuilder('m')
                         ->orderBy('m.title', 'ASC');

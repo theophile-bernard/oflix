@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\PersonRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\PersonRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PersonRepository::class)]
 class Person
@@ -16,9 +17,11 @@ class Person
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['get_item'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['get_item'])]
     private ?string $lastname = null;
 
     #[ORM\OneToMany(mappedBy: 'person', targetEntity: Casting::class, orphanRemoval: true)]

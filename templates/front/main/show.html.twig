@@ -54,7 +54,7 @@
 							<dt class="col-sm-12">Avec</dt>
 							<dd class="col-sm-12">
 
-							{% for casting in movie.casting %}
+							{% for casting in movie.castings %}
 								{{ casting.person.firstname ~ " " ~ casting.person.lastname }} ({{ casting.role }})<br>
 							{% endfor %}
 							</dd>

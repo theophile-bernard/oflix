@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front de Oflix API</title>
+</head>
+<body>
+    <button id="btConnection">Connexion</button>
+    <button id="btnLoad">Lire les movies</button>
+    <ul id="result"></ul>
+    <script>
+        const app = {
+            apiUrl: "http://localhost/Symfony/oflix-theophile-bernard/public/api",
+            loginUrl: "http://localhost/Symfony/oflix-theophile-bernard/public/api/login_check",
+            jwtToken: "",
+            init: function () {
+                // récupère le token jsw si il existe
+                app.jwtToken = localStorage.getItem('jwt-token');
+                document.querySelector('#btnLoad').addEventListener('click', app.handleLoadMoviesBtnClick);
+                document.querySelector('#btConnection').addEventListener('click', app.handleConnectionBtnClick);
+            },
+            displayMoviesFromList: function (movieList) {
+                const resultDiv = document.querySelector('#result');
+                resultDiv.innerHTML = '';
+                // Vérifie si movieList est un tableau avant de l'itérer
+                if (Array.isArray(movieList)) {
+                    for (const currentMovie of movieList) {
+                        let ulEl = document.createElement('li');
+                        ulEl.innerHTML = currentMovie.title;
+                        resultDiv.appendChild(ulEl);
+                    }
+                } else {
+                    console.error('La liste de films n\'est pas valide : ', movieList);
+                    // Gérer l'erreur de manière appropriée
+                }
+            },
+            handleConnectionBtnClick: function (evt) {
+                fetch(app.loginUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: "admin@admin.com",
+                        password: "admin"
+                    })
+                })
+                    .then(response => response.json())
+                    .then(json => {
+                        console.log("Token JWT : ", json.token);
+                        localStorage.setItem('jwt-token', json.token);
+                    });
+            },
+            handleLoadMoviesBtnClick: async function (evt) {
+                console.log("Token JWT : ", app.jwtToken);
+                console.log("url api : ", app.apiUrl + "/movies");
+                try {
+                    const responseData = await app.fetchData(app.apiUrl + "/movies", {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${app.jwtToken}`
+                        },
+                    });
+                    console.log(responseData);
+                    if (responseData.error) {
+                        console.error('Erreur : ', responseData.error);
+                        // Gérer les erreurs de manière appropriée
+                    } else {
+                        console.log('Pas d\'erreur');
+                        app.displayMoviesFromList(responseData);
+                    }
+                } catch (error) {
+                    console.error('Une erreur s\'est produite : ', error);
+                    // Gérer l'erreur de manière appropriée
+                }
+            },
+            fetchData: async function (url, options) {
+                const response = await fetch(url, options);
+                return await response.json();
+            }
+        };
+        document.addEventListener('DOMContentLoaded', app.init);
+    </script>
+</body>
+</html>

@@ -7,15 +7,17 @@ use App\Entity\User;
 use App\Entity\Genre;
 use App\Entity\Movie;
 use App\Entity\Person;
+use App\Entity\Review;
 use App\Entity\Season;
 use App\Entity\Casting;
 use App\Repository\MovieRepository;
+use App\Repository\ReviewRepository;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 
 class AppFixtures extends Fixture
@@ -25,6 +27,7 @@ class AppFixtures extends Fixture
     private $persons = [];
 
     public function __construct(
+        private ReviewRepository $reviewRepository,
         private SluggerInterface $slugger,
     ) {
     }
@@ -114,6 +117,29 @@ class AppFixtures extends Fixture
                     $manager->persist($casting);
                 }
             }
+
+            // on crée entre 0 et 5 critiques (Reviews)
+            for ($j = 0; $j < random_int(0, 6); $j++) {
+                $review = new Review();
+                $review->setMovie($movie);
+                $review->setUsername($faker->name());
+                $review->setEmail($faker->email());
+                $review->setContent(($faker->realTextBetween()));
+                $review->setRating(random_int(1, 5));
+                $review->setWatchedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeThisDecade()));
+                $reactions = ['smile', 'cry', 'think', 'sleep', 'dream',];
+                shuffle($reactions);
+                $review->setReactions(array_slice($reactions, 0, random_int(0, 5)));
+                $manager->persist($review);
+            }
+
+            $manager->persist($movie);
+            // on doit flusher pour pouvoir calculer la moyenne du film
+            $manager->flush();
+            // Calcul du nouveau rating du film
+            $averageRating = $this->reviewRepository->averageRating($movie);
+            $movie->setRating($averageRating);
+
 
             $manager->persist($movie);
 

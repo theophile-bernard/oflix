@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\SeasonRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\SeasonRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -24,11 +25,13 @@ class Season
     #[ORM\Column(type: Types::SMALLINT)]
     #[Assert\NotBlank()]
     #[Assert\GreaterThan(-1)]
+    #[Groups(['get_collection','get_item'])]
     private ?int $number = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
     #[Assert\NotBlank()]
     #[Assert\GreaterThan(0)]
+    #[Groups(['get_collection', 'get_item'])]
     private ?int $episodesNumber = null;
 
     #[ORM\ManyToOne(inversedBy: 'seasons')]

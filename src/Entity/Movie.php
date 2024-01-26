@@ -7,8 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\MovieRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
@@ -19,23 +20,28 @@ class Movie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['get_collection', 'get_item', 'get_genres_movies', 'get_movie_ramdom'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
+    #[Groups(['get_collection', 'get_item', 'get_genres_movies', 'get_movie_ramdom'])]
     private ?string $title = null;
 
     #[ORM\Column]
     #[Assert\NotBlank()]
+    #[Groups(['get_item'])]
     private ?\DateTimeImmutable $releaseDate = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
     #[Assert\NotBlank()]
     #[Assert\GreaterThan(60)]
+    #[Groups(['get_collection', 'get_item', 'get_genres_movies'])]
     private ?int $duration = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank()]
+    #[Groups(['get_item'])]
     private ?string $summary = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -45,6 +51,7 @@ class Movie
     #[ORM\Column(length: 2083, nullable: true)]
     #[Assert\Length(max: 2083)]
     #[Assert\Url()]
+    #[Groups(['get_item'])]
     private ?string $poster = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 2, scale: 1, nullable: true)]
@@ -61,13 +68,16 @@ class Movie
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Season::class, orphanRemoval: true, cascade: ["remove"])]
     #[ORM\OrderBy(["number" => "ASC"])]
+    #[Groups(['get_collection', 'get_item'])]
     private Collection $seasons;
 
     #[ORM\ManyToMany(targetEntity: Genre::class, mappedBy: 'movie', fetch: 'EAGER')]
     #[Assert\Count(min:2, max:5)]
+    #[Groups(['get_collection', 'get_item'])]
     private Collection $genres;
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Casting::class, orphanRemoval: true)]
+    #[Groups(['get_item'])]
     #[ORM\OrderBy(["castingOrder" => "ASC"])]
     private Collection $castings;
 
@@ -250,12 +260,12 @@ class Movie
     /**
      * @return Collection<int, Casting>
      */
-    public function getCasting(): Collection
+    public function getCastings(): Collection
     {
         return $this->castings;
     }
 
-    public function addCasting(Casting $casting): static
+    public function addCastings(Casting $casting): static
     {
         if (!$this->castings->contains($casting)) {
             $this->castings->add($casting);
@@ -265,7 +275,7 @@ class Movie
         return $this;
     }
 
-    public function removeCasting(Casting $casting): static
+    public function removeCastings(Casting $casting): static
     {
         if ($this->castings->removeElement($casting)) {
             // set the owning side to null (unless already changed)
