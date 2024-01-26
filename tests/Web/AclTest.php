@@ -171,4 +171,52 @@ class AclTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame($expectedStatusCode);
     }
+
+    // Tests du prof :
+
+    /**
+     * @dataProvider urlReviewProf
+     */
+    public function testAddReviewProf($slug, $userName, $returnGet, $returnPost)
+    {
+        // on instancie un client
+        $client = static::createClient();
+
+        // connecter un utilisateur
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('user@user.com');
+        $client->loginUser($testUser);
+
+        // on appelle la page d'ajout d'une revue
+        $crawler = $client->request('GET', "/show/{$slug}/add-review");
+
+        // on vérifie qu'on est bien sur la page du formulaire d'ajout
+        $this->assertResponseStatusCodeSame($returnGet);
+
+        // vérifier le code de réponse
+        if ($client->getResponse()->getStatusCode() !== 200) {
+            // Si le code de réponse n'est pas 200, arrêter le traitement
+            return;
+        }
+        // on rempli le formulaire
+        $crawler = $client->submitForm('Envoyer', [
+            'review[username]'      => $userName,
+            'review[email]'         => 'Patrick@patrick.com',
+            'review[content]'       => 'La revue de Patrick',
+            'review[rating]'        => '5',
+            'review[reactions]'     => ['smile', 'cry'],
+            'review[watchedAt]'     => '2024-01-26 10:19:00',
+        ]);
+
+        // on fois soumis, on attend un retour 302
+        $this->assertResponseStatusCodeSame($returnPost);
+    }
+
+    public static function urlReviewProf()
+    {
+        return [
+            ['The-Good-Place', 'Patrick', 200, 302],
+            ['The-Blacklist', '', 200, 422],
+        ];
+    }
 }
